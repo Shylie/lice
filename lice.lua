@@ -81,28 +81,28 @@ end
 ---Draw the isometric tilemap at `(drawX, drawY)`.
 ---@param drawX integer X coordinate to draw the center at
 ---@param drawY integer Y coordinate to draw the center at
----@param sizeX? integer Number of tiles to draw on the x axis
----@param sizeY? integer Number of tiles to draw on the y axis
----@param sizeZ? integer Number of tiles to draw on the z axis
+---@param areaX? integer Number of tiles to draw on the x axis
+---@param areaY? integer Number of tiles to draw on the y axis
+---@param areaZ? integer Number of tiles to draw on the z axis
 ---@param centerX? integer X coordinate of the tile drawn in the middle
 ---@param centerY? integer Y coordinate of the tile drawn in the middle
 ---@param centerZ? integer Z coordinate of the tile drawn in the middle
-function lice:draw(drawX, drawY, sizeX, sizeY, sizeZ, centerX, centerY, centerZ)
-	sizeX = sizeX or self.sizeX
-	sizeY = sizeY or self.sizeY
-	sizeZ = sizeZ or self.sizeZ
+function lice:draw(drawX, drawY, areaX, areaY, areaZ, centerX, centerY, centerZ)
+	areaX = areaX or self.sizeX
+	areaY = areaY or self.sizeY
+	areaZ = areaZ or self.sizeZ
 	centerX = centerX or math.floor(self.sizeX / 2)
 	centerY = centerY or math.floor(self.sizeY / 2)
 	centerZ = centerZ or math.floor(self.sizeZ / 2)
 
-	local startX = centerX - math.floor(sizeX / 2)
-	local endX = centerX + math.floor(sizeX / 2)
+	local startX = centerX - math.floor(areaX / 2)
+	local endX = centerX + math.floor(areaX / 2)
 
-	local startY = centerY - math.floor(sizeY / 2)
-	local endY = centerY + math.floor(sizeY / 2)
+	local startY = centerY - math.floor(areaY / 2)
+	local endY = centerY + math.floor(areaY / 2)
 
-	local startZ = centerZ - math.floor(sizeZ / 2)
-	local endZ = centerZ + math.floor(sizeZ / 2)
+	local startZ = centerZ - math.floor(areaZ / 2)
+	local endZ = centerZ + math.floor(areaZ / 2)
 
 	for z = startZ, endZ do
 		for y = startY, endY do
