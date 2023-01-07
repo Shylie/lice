@@ -1,3 +1,7 @@
+---@class LiceTile
+---@field id integer
+---@field user table
+
 ---@class Lice
 ---@field sizeX integer
 ---@field sizeY integer
@@ -7,7 +11,7 @@
 ---@field atlasHeight integer
 ---@field tileWidth integer
 ---@field tileHeight integer
----@field data integer[]
+---@field data LiceTile[]
 ---@field quads love.Quad[]
 local lice = { }
 lice.__index = lice
@@ -19,7 +23,7 @@ lice.__index = lice
 ---@param atlas love.Texture Texture atlas to use when drawing
 ---@param tileWidth integer Width of a tile in the texture atlas
 ---@param tileHeight integer Height of a tile in the texture atlas
----@return table
+---@return Lice
 function lice.new(sizeX, sizeY, sizeZ, atlas, tileWidth, tileHeight)
 	return setmetatable({
 		sizeX = sizeX,
@@ -111,7 +115,7 @@ function lice:draw(drawX, drawY, areaX, areaY, areaZ, centerX, centerY, centerZ)
 					local tile = self.data[self:_dataIndex(x, y, z)]
 					if tile then
 						local drawOffsetX, drawOffsetY = self:_drawCoordinates(x - centerX, y - centerY, z - centerZ)
-						local quad = self:_atlasQuad(tile)
+						local quad = self:_atlasQuad(tile.id)
 
 						love.graphics.draw(self.atlas, quad, drawX + drawOffsetX - math.floor(self.tileWidth / 2), drawY + drawOffsetY - math.floor(self.tileHeight / 2))
 					end
@@ -125,20 +129,29 @@ end
 ---@param x integer
 ---@param y integer
 ---@param z integer
----@return integer|nil
+---@return LiceTile|nil
 function lice:getTile(x, y, z)
 	return self:_validCoordinate(x, y, z) and self.data[self:_dataIndex(x, y, z)] or nil
 end
 
 ---Set the tile type at `(x, y, z)`.
 ---Doesn't work out of map bounds.
----@param x any
----@param y any
----@param z any
----@param tile any
+---@param x integer
+---@param y integer
+---@param z integer
+---@param tile integer|LiceTile
 function lice:setTile(x, y, z, tile)
 	if self:_validCoordinate(x, y, z) then
-		self.data[self:_dataIndex(x, y, z)] = tile
+		local idx = self:_dataIndex(x, y, z)
+		if type(tile) == "number" then
+			if self.data[idx] then
+				self.data[idx].id = tile
+			else
+				self.data[idx] = { id = tile }
+			end
+		elseif type(tile) == 'table' then
+			self.data[idx] = tile
+		end
 	end
 end
 
