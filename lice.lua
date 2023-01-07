@@ -96,13 +96,13 @@ function lice:draw(drawX, drawY, areaX, areaY, areaZ, centerX, centerY, centerZ)
 	centerZ = centerZ or math.floor(self.sizeZ / 2)
 
 	local startX = centerX - math.floor(areaX / 2)
-	local endX = centerX + math.ceil(areaX / 2)
+	local endX = startX + areaX - 1
 
 	local startY = centerY - math.floor(areaY / 2)
-	local endY = centerY + math.ceil(areaY / 2)
+	local endY = startY + areaY - 1
 
 	local startZ = centerZ - math.floor(areaZ / 2)
-	local endZ = centerZ + math.ceil(areaZ / 2)
+	local endZ = startZ + areaZ - 1
 
 	for z = startZ, endZ do
 		for y = startY, endY do
