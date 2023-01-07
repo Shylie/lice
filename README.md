@@ -54,4 +54,4 @@ A 4×4 grid of 32×32 textures would have IDs as follows:
 </table>
 
 \
-² Map data is just an integer corresponding to an atlas ID (see ).
+² Map data is just an integer corresponding to an atlas ID (see footnote 1).
