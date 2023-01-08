@@ -1,5 +1,5 @@
 ---@class LiceTile
----@field id integer
+---@field layers integer[]
 ---@field user table
 
 ---@class Lice
@@ -25,7 +25,7 @@ lice.__index = lice
 ---@param tileHeight integer Height of a tile in the texture atlas
 ---@return Lice
 function lice.new(sizeX, sizeY, sizeZ, atlas, tileWidth, tileHeight)
-	return setmetatable({
+	local map = setmetatable({
 		sizeX = sizeX,
 		sizeY = sizeY,
 		sizeZ = sizeZ,
@@ -37,6 +37,12 @@ function lice.new(sizeX, sizeY, sizeZ, atlas, tileWidth, tileHeight)
 		data = { },
 		quads = { }
 	}, lice)
+
+	for i = 1, sizeX * sizeY * sizeZ do
+		map.data[i] = { layers = { } }
+	end
+
+	return map
 end
 
 function lice:_validCoordinate(x, y, z)
@@ -44,7 +50,7 @@ function lice:_validCoordinate(x, y, z)
 end
 
 function lice:_dataIndex(x, y, z)
-	return z * self.sizeX * self.sizeY + y * self.sizeX + x + 1
+	return (z - 1) * self.sizeX * self.sizeY + (y - 1) * self.sizeX + x
 end
 
 function lice:_atlasQuad(id)
@@ -115,9 +121,10 @@ function lice:draw(drawX, drawY, areaX, areaY, areaZ, centerX, centerY, centerZ)
 					local tile = self.data[self:_dataIndex(x, y, z)]
 					if tile then
 						local drawOffsetX, drawOffsetY = self:_drawCoordinates(x - centerX, y - centerY, z - centerZ)
-						local quad = self:_atlasQuad(tile.id)
-
-						love.graphics.draw(self.atlas, quad, drawX + drawOffsetX - math.floor(self.tileWidth / 2), drawY + drawOffsetY - math.floor(self.tileHeight / 2))
+						for i, layer in ipairs(tile.layers) do
+							local quad = self:_atlasQuad(layer)
+							love.graphics.draw(self.atlas, quad, drawX + drawOffsetX - math.floor(self.tileWidth / 2), drawY + drawOffsetY - math.floor(self.tileHeight / 2))
+						end
 					end
 				end
 			end
@@ -125,33 +132,62 @@ function lice:draw(drawX, drawY, areaX, areaY, areaZ, centerX, centerY, centerZ)
 	end
 end
 
----Get the tile at `(x, y, z)`, or `nil` if it doesn't exist.
+---Get the number of draw layers at `(x, y, z)`, or `0` if the tile does not exist.
+---Returns `0` out of map bounds.
+---@param x any
+---@param y any
+---@param z any
+---@return integer
+function lice:getLayerCount(x, y, z)
+	return self:_validCoordinate(x, y, z) and #self.data[self:_dataIndex(x, y, z)].layers or 0
+end
+
+---Get the texture ID at `(x, y, z, layer)`, or `nil` if it doesn't exist.
+---Returns `nil` out of map bounds.
 ---@param x integer
 ---@param y integer
 ---@param z integer
----@return LiceTile|nil
-function lice:getTile(x, y, z)
-	return self:_validCoordinate(x, y, z) and self.data[self:_dataIndex(x, y, z)] or nil
+---@param layer? integer
+---@return integer|nil
+function lice:getLayerID(x, y, z, layer)
+	layer = layer or 1
+	return self:_validCoordinate(x, y, z) and self.data[self:_dataIndex(x, y, z)].layers[layer] or nil
 end
 
----Set the tile type at `(x, y, z)`.
+---Set the texture ID at `(x, y, z, layer)`.
 ---Doesn't work out of map bounds.
 ---@param x integer
 ---@param y integer
 ---@param z integer
----@param tile integer|LiceTile
-function lice:setTile(x, y, z, tile)
+---@param id integer
+---@param layer? integer
+function lice:setLayerID(x, y, z, id, layer)
+	layer = layer or 1
 	if self:_validCoordinate(x, y, z) then
-		local idx = self:_dataIndex(x, y, z)
-		if type(tile) == "number" then
-			if self.data[idx] then
-				self.data[idx].id = tile
-			else
-				self.data[idx] = { id = tile }
-			end
-		elseif type(tile) == 'table' then
-			self.data[idx] = tile
-		end
+		self.data[self:_dataIndex(x, y, z)].layers[layer] = id
+	end
+end
+
+---Get the tile user data at `(x, y, z)`, or `nil` if there is no user data.
+---Returns `nil` out of map bounds.
+---@param x integer
+---@param y integer
+---@param z integer
+---@return table|nil
+function lice:getTileData(x, y, z)
+	return self:_validCoordinate(x, y, z) and self.data[self:_dataIndex(x, y, z)].user or nil
+end
+
+---Set the tile user data at `(x, y, z)`, or `nil` if it doesn't exist.
+---Returns `nil` out of map bounds.
+---@param x integer
+---@param y integer
+---@param z integer
+---@param data table
+function lice:setTileData(x, y, z, data)
+	local index = self:_dataIndex(x, y, z)
+	if self:_validCoordinate(x, y, z) and self.data[index] then
+		self.data[self:_dataIndex(x, y, z)].user = data
 	end
 end
 
