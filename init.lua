@@ -159,7 +159,7 @@ end
 ---@param x integer
 ---@param y integer
 ---@param z integer
----@param id integer
+---@param id integer|nil
 ---@param layer? integer
 function lice:setLayerID(x, y, z, id, layer)
 	layer = layer or 1
