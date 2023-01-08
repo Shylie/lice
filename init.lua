@@ -77,13 +77,13 @@ end
 ---@return integer X draw coordinate offset
 ---@return integer Y draw coordinate offset
 function lice:_drawCoordinates(x, y, z)
-	local xxOffset = x * -(self.tileWidth / 2)
-	local xyOffset = x * (self.tileHeight / 4)
+	local xxOffset = x * -math.floor(self.tileWidth / 2)
+	local xyOffset = x * math.floor(self.tileHeight / 4)
 
-	local yxOffset = y * (self.tileWidth / 2)
-	local yyOffset = y * (self.tileHeight / 4)
+	local yxOffset = y * math.floor(self.tileWidth / 2)
+	local yyOffset = y * math.floor(self.tileHeight / 4)
 
-	local zyOffset = z * -(self.tileHeight / 2)
+	local zyOffset = z * -math.floor(self.tileHeight / 2)
 
 	return xxOffset + yxOffset, xyOffset + yyOffset + zyOffset
 end
