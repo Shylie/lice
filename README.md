@@ -10,7 +10,7 @@ A löve library for drawing 3D isometric tile maps.
 
 ---
 ## Basic usage:
-1. Require the file with `local lice = require "folder.to.lice.lice"`.
+1. Require the file with `local lice = require "folder.to.lice"`.
 2. Create an instance of a tilemap with `local map = lice.new(sizeX, sizeY, sizeZ, atlas, tileWidth, tileHeight)`.
 	- `sizeX` — Maximum size of the map.
 	- `sizeY` — Maximum size of the map.
@@ -18,14 +18,14 @@ A löve library for drawing 3D isometric tile maps.
 	- `atlas` — A texture atlas¹ for drawing the map.
 	- `tileWidth` — Pixel width of a single tile in the atlas.
 	- `tileHeight` — Pixel height of a single tile in the atlas.
-3. Set up the map data² like so: `map:setTile(x, y, z, 1)`.
+3. Set up the map data² like so: `map:setLayerID(x, y, z, id, layer?)`.
 4. Draw the map in `love.draw` with `map:draw(x, y, areaX?, areaY?, areaZ?, centerX?, centerY?, centerZ?)`.
 
 ---
 ## Footnotes
 
 ¹ Texture atlases are expected to be a grid of `tileWidth`×`tileHeight` tiles.
-A 4×4 grid of 32×32 textures would have IDs as follows:
+A 4×4 grid of textures would have IDs as follows:
 <table>
     <tr>
         <td>1</td>
