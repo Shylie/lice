@@ -132,6 +132,31 @@ function lice:draw(drawX, drawY, areaX, areaY, areaZ, centerX, centerY, centerZ)
 	end
 end
 
+function lice:getSizeX()
+	return self.sizeX
+end
+
+function lice:getSizeY()
+	return self.sizeY
+end
+
+function lice:getSizeZ()
+	return self.sizeZ
+end
+
+---Convert `(x, y)` coordinates to tilemap coordinates (excluding Z height).
+---Assumes the map is centered at `(0, 0, 0)`.
+---@param x number
+---@param y number
+---@return integer x Tilemap x coordinate
+---@return integer y Tilemap y coordinate
+function lice:toTilemap(x, y)
+	local scaledX = x / self.tileWidth
+	local scaledY = 2 * y / self.tileHeight
+
+	return math.floor(scaledY - scaledX), math.floor(scaledY + scaledX)
+end
+
 ---Get the number of draw layers at `(x, y, z)`, or `0` if the tile does not exist.
 ---Returns `0` out of map bounds.
 ---@param x any
